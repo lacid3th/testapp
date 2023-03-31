@@ -63,6 +63,7 @@
         <div
           class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
           <h1 class="h2">Functions</h1>
+
           <div class="btn-toolbar mb-2 mb-md-0">
             <div class="btn-group me-2">
               <input type="file" class="btn btn-sm btn-outline-secondary" v-on:change="addfile($event)"
@@ -71,6 +72,42 @@
               <button type="button" class="btn btn-sm btn-outline-secondary">Apply</button>
               <button type="button" class="btn btn-sm btn-outline-secondary">Server Send</button>
             </div>
+          </div>
+        </div>
+        <div style="display : block; justify-items: flex-start;"
+          class="d-flex flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom gap-2">
+          <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+              data-bs-toggle="dropdown" aria-expanded="false">
+              Seller : {{ selectedSeller }}
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+              <li v-for="(item, i) in sellerlist" :key="i"><a class="dropdown-item" href="#"
+                  @click="sellerNameApply(i)">{{ item }}</a></li>
+            </ul>
+          </div>
+          <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton2"
+              data-bs-toggle="dropdown" aria-expanded="false">
+              Brand : {{ selectedBrand }}
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+              <li v-for="(item, i) in brandlist" :key="i"><a class="dropdown-item" href="#"
+                  @click="brandNameApply(i)">{{ item }}</a></li>
+            </ul>
+          </div>
+          <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton3"
+              data-bs-toggle="dropdown" aria-expanded="false">
+              Manager : {{ selectedManager }}
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+              <li v-for="(item, i) in managerlist" :key="i"><a class="dropdown-item" href="#"
+                  @click="managerNameApply(i)">{{ item }}</a></li>
+            </ul>
+          </div>
+          <div>
+            <button type="button" class="btn btn-outline-secondary">Apply</button>
           </div>
         </div>
         <h2>Order List</h2>
@@ -113,6 +150,12 @@ export default {
       arraylist: null, // 이게 Json 형식
       data: null, // 헤더 Array (표시용도)
       headers: null, // 데이터 Array (표시용도)
+      sellerlist: ["김진성", "김기운", "김수겸"],
+      selectedSeller: null,
+      brandlist: ["애즈유", "침대팔이", "XYZ"],
+      selectedBrand: null,
+      managerlist: ["유지영", "송유진", "윤혜미"],
+      selectedManager: null,
     };
   },
   methods: {
@@ -133,8 +176,9 @@ export default {
         // console.log(XLSX.utils.sheet_to_json(worksheet, { raw: true }));
         this.arraylist = XLSX.utils.sheet_to_json(worksheet, { raw: true });
         this.filelist = [];
-        // console.log(this.filelist);
-        // console.log(this.arraylist);
+        
+        // Json Array object 에서 key 값 하고 value 를 모든 Array 에 다 추가해야 합니다. How to?
+
         console.log(this.headers);
 
         return this.setup(); // 순차적으로 Setup 함수 실행
@@ -167,6 +211,15 @@ export default {
       console.log(this.data);
       console.log(this.headers);
     },
+    sellerNameApply(i) {
+      this.selectedSeller = this.sellerlist[i];
+    },
+    brandNameApply(i) {
+      this.selectedBrand = this.brandlist[i];
+    },
+    managerNameApply(i) {
+      this.selectedManager = this.managerlist[i];
+    }
   }
 };
 </script>
