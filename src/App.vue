@@ -107,7 +107,7 @@
             </ul>
           </div>
           <div>
-            <button type="button" class="btn btn-outline-secondary">Apply</button>
+            <button type="button" class="btn btn-outline-secondary" @click="SBMApply">Apply</button>
           </div>
         </div>
         <h2>Order List</h2>
@@ -136,7 +136,6 @@
 
 <script>
 import * as XLSX from "xlsx";
-import { ref } from 'vue';
 
 export default {
   components: {
@@ -185,14 +184,14 @@ export default {
       };
     },
     setup() {
-      let data = ref(this.arraylist)
+      var data = this.arraylist;
       const getHeaders = () => {
         let h = []
-        if (data.value.length > 0) {
-          var columnsIn = data.value[0];
+        if (data.length > 0) {
+          var columnsIn = data[0];
           for (var key in columnsIn) {
             h.push({ text: key })
-            console.log(key); // here is your column name you are looking for
+            // console.log(key); // here is your column name you are looking for
           }
         } else {
           console.log("No columns");
@@ -200,17 +199,44 @@ export default {
         return h
       }
       // let headers = ref([{text : 'col-1'},{text : 'col-2'}])
-      let headers = ref(getHeaders())
+      var headers = getHeaders();
       // return {
       //   data,
       //   headers
       // }
+      
+      for (let index = 0; index < data.length; index++) {
+        data[index].Seller = "";
+        data[index].Brand = "";
+        data[index].Manager = "";
+      }
+
       this.data = data;
+      // headers = headers.splice(1, 0, {text:'Seller'},{text:'Brand'},{text:'Manager'});
+      headers = headers.concat({text:'Seller'},{text:'Brand'},{text:'Manager'});
       this.headers = headers;
 
       console.log(this.data);
-      console.log(this.headers);
+      console.log(headers);
     },
+    SBMApply(){
+      for (let index = 0; index < this.data.length; index++) {
+        this.data[index].Seller = this.selectedSeller;
+        this.data[index].Brand = this.selectedBrand;
+        this.data[index].Manager = this.selectedManager;
+      }
+    },
+
+    jsontoArray(json){
+      var jsonHeader = json.key();
+      var jsonData = json.values();
+      var jsonArrayData = jsonHeader.concat(jsonData);
+
+      return jsonArrayData;
+    },
+
+
+
     sellerNameApply(i) {
       this.selectedSeller = this.sellerlist[i];
     },
