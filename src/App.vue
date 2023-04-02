@@ -213,7 +213,6 @@ export default {
       }
 
       this.data = data;
-      // headers = headers.splice(1, 0, {text:'Seller'},{text:'Brand'},{text:'Manager'});
       headers = headers.concat({text:'Seller'},{text:'Brand'},{text:'Manager'});
       this.headers = headers;
 
@@ -237,7 +236,8 @@ export default {
     },
 
     serverSend(){
-      axios.post('http://localhost:8000/order', {test: 'xxx'})
+      console.log(this.data);
+      axios.post('http://localhost:8000/order', this.data)
       .then(function(result) {
         console.log(result.data);
       })
