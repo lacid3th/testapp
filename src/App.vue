@@ -70,7 +70,7 @@
                 placeholder="Upload file"
                 accept=".csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" />
               <button type="button" class="btn btn-sm btn-outline-secondary">Apply</button>
-              <button type="button" class="btn btn-sm btn-outline-secondary">Server Send</button>
+              <button type="button" class="btn btn-sm btn-outline-secondary" @click="serverSend">Server Send</button>
             </div>
           </div>
         </div>
@@ -136,6 +136,7 @@
 
 <script>
 import * as XLSX from "xlsx";
+import axios from 'axios';
 
 export default {
   components: {
@@ -235,7 +236,21 @@ export default {
       return jsonArrayData;
     },
 
+    serverSend(){
+      axios.post('http://localhost:8000/order', {test: 'xxx'})
+      .then(function(result) {
+        console.log(result.data);
+      })
+    },
 
+    serverSend2(){
+      axios.get('http://localhost:8000/api')
+      .then(function(result) {
+        console.log(result.data);
+      })
+    },
+
+    
 
     sellerNameApply(i) {
       this.selectedSeller = this.sellerlist[i];
