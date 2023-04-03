@@ -135,6 +135,7 @@ export default {
       selectedManager: null,
 
       loadedData: null,
+      
     };
   },
   methods: {
