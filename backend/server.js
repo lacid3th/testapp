@@ -15,6 +15,7 @@ app.use(bodyParser.json());
 
 //Mongoose DB
 const mongoose = require('mongoose');
+const { reactive } = require('vue');
 // 몽구스 스키마 만들기
 const orderlistSchema = new mongoose.Schema({
     순번: { type: Number },
@@ -23,14 +24,14 @@ const orderlistSchema = new mongoose.Schema({
     Seller: { type: String },
     Brand: { type: String },
     Manager: { type: String },
-},  
+},
     {
         timestamps: true,
         collection: 'orderlist'
     });
 
 // 스키마로 모델 만들기.. 왜 하는지 모름
-module.exports = orderlist = mongoose.model('orderlist', orderlistSchema);
+var orderlist = mongoose.model('orderlist', orderlistSchema);
 // const orderlist = mongoose.model('orderlist', orderlistSchema);
 
 var db = mongoose.connection;
@@ -50,24 +51,35 @@ app.get('/api', (req, res) => {
 });
 
 app.post('/order', (req, res) => {
-    const orderedlst = new orderlist({
-        순번: req.body.순번,
-        이름: req.body.이름,
-        금액: req.body.금액,
-        Seller: req.body.Seller,
-        Brand: req.body.Brand,
-        Manager: req.body.Manager,
-    });
+    // 어마어마 하게 중요한 코드 
+    // MongoDB Atlas 에서 Collection 옵션에서 no_1 뭐 이딴게 중복허용을 안했었음
+    for (let i = 0; i < req.body.length; i++) {
+        // 반복문 내부에서 인스턴스 새로 생성해야 동일 id 버그 안남
+        var orderedlst = new orderlist();
+        // 이건 더 섹시하게 하는 방법이 있을듯
+        orderedlst.순번 = req.body[i].순번,
+            orderedlst.이름 = req.body[i].이름,
+            orderedlst.금액 = req.body[i].금액,
+            orderedlst.Seller = req.body[i].Seller,
+            orderedlst.Brand = req.body[i].Brand,
+            orderedlst.Manager = req.body[i].Manager
 
-    console.log(orderedlst);
+        orderedlst.save();
+    }
+    res.send(orderedlst);
 });
 
+app.post('/access', (req, res) => {
+    // getItems() 이 서버를 거치고 오기때문에 작업이 완료되길 기다렸다가 then 으로 불러줘야 함
+    getItems(req.body).then(function (data) {
+        console.log(data + "bb");
+        res.send(data);
+    });
 
-
-
-// mylist.save();
-
-
-
-
-// mylist.save().then(() => console.log('saved'));
+});
+// async await 을 사용해서 비동기 처리를 동기처럼 처리
+async function getItems(object) {
+    const items = await orderlist.find(object);
+    console.log(items + "cc");
+    return items;
+};
