@@ -83,6 +83,7 @@ export default {
 
             );
         },
+        
         setup() {
             var data = this.loadedData;
             const getHeaders = () => {
@@ -103,7 +104,13 @@ export default {
             this.headers = headers;
             this.data = data;
         },
-    }
+    },
+    // 여기 있으면 페이지 불러오자마자 실행됨
+    mounted() {
+        this.tmpServerLoad();
+    },
 }
+
 </script>
+
 <style></style>
