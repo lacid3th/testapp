@@ -14,6 +14,11 @@ path: "/result",
 name: "resultPage",
 component: () => import("../src/views/resultPage.vue"),
 },
+{
+    path: "/register",
+    name: "registerPage",
+    component: () => import("../src/views/registerPage.vue"),
+    },
 ];
 
 const router = createRouter({

@@ -33,7 +33,7 @@
             <li class="nav-item">
               <a class="nav-link" href="#"> <!-- # 뒤에 페이지 이동 url 작성-->
                 <span data-feather="shopping-cart"></span>
-                PaperWork
+                <router-link to="/register">Register Page</router-link>
               </a>
             </li>
             <li class="nav-item">

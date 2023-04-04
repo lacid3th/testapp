@@ -30,9 +30,18 @@ const orderlistSchema = new mongoose.Schema({
         collection: 'orderlist'
     });
 
+const sellerListSchema = new mongoose.Schema({
+    Seller: { type: String },
+},
+    {
+        timestamps: true,
+        collection: 'sellerList'
+    })
+
 // 스키마로 모델 만들기.. 왜 하는지 모름
 var orderlist = mongoose.model('orderlist', orderlistSchema);
 // const orderlist = mongoose.model('orderlist', orderlistSchema);
+var sellerListModel = mongoose.model('sellerList', sellerListSchema);
 
 var db = mongoose.connection;
 var data;
@@ -68,6 +77,15 @@ app.post('/order', (req, res) => {
     }
     res.send(orderedlst);
 });
+// tmpRegister
+app.post('/tmpRegister', (req, res) => {
+    var sellerList = new sellerListModel();
+    sellerList.Seller = req.body.Seller,
+    sellerList.save();
+    res.send(sellerList);
+});
+
+
 
 app.post('/access', (req, res) => {
     // getItems() 이 서버를 거치고 오기때문에 작업이 완료되길 기다렸다가 then 으로 불러줘야 함
@@ -77,9 +95,22 @@ app.post('/access', (req, res) => {
     });
 
 });
+
+app.post('/tmpLoad',(req, res) => {
+    getItemsSeller().then(function(data){
+        res.send(data);
+    })
+})
+
 // async await 을 사용해서 비동기 처리를 동기처럼 처리
 async function getItems(object) {
     const items = await orderlist.find(object);
-    console.log(items + "cc");
+    console.log(items);
     return items;
 };
+
+async function getItemsSeller(){
+    const items = await sellerListModel.find();
+    console.log(items);
+    return items;
+}
