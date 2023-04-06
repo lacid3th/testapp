@@ -51,6 +51,7 @@
 </template>
 <script>
 import axios from "axios";
+import * as my from '../myFunction.js'; /* eslint-disable */
 
 export default {
     data() {
@@ -83,7 +84,7 @@ export default {
 
             );
         },
-        
+
         setup() {
             var data = this.loadedData;
             const getHeaders = () => {
@@ -108,6 +109,7 @@ export default {
     // 여기 있으면 페이지 불러오자마자 실행됨
     mounted() {
         this.tmpServerLoad();
+        my.printout();
     },
 }
 

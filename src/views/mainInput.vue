@@ -119,6 +119,7 @@
 <script>
 import * as XLSX from "xlsx";
 import axios from "axios";
+import * as my from "../myFunction.js";
 
 export default {
   components: {},
@@ -159,6 +160,7 @@ export default {
 
         // Json Array object 에서 key 값 하고 value 를 모든 Array 에 다 추가해야 합니다. How to?
 
+        console.log(my.json2Array(this.arraylist));
         console.log(this.headers);
 
         return this.setup(); // 순차적으로 Setup 함수 실행
