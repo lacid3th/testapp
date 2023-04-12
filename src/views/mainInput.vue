@@ -96,23 +96,41 @@
     </div>
     <h2>Order List</h2>
     <div>
-      <table class="table table-striped table-sm" style="">
+      <!-- 여기서부터 Array to Table 구현하는 HTML 임 -->
+      <!-- <table class="table table-striped table-sm" style="">
         <thead>
-          <!-- 이거 있어야 스타일 제대로 먹음 -->
           <tr>
-            <th v-for="header in headers" :key="header.text">
-              {{ header.text }}
+            <th v-for="header in headers" :key="header">
+              {{ header }}
             </th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(row, index) in data" :key="index">
-            <td v-for="header in headers" :key="header.text">
-              {{ row[header.text] }}
+            <td v-for="header in headers" :key="header">
+              {{ row[header] }}
+            </td>
+          </tr>
+        </tbody>
+      </table> -->
+      <table class="table table-striped table-sm" style="">
+        <thead>
+          <!-- 이거 있어야 스타일 제대로 먹음 -->
+          <tr>
+            <th v-for="header in headers" :key="header">
+              {{ header }}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for= "(line, i) in data" :key="i">
+            <td v-for= "(row, j) in data[0]" :key="j">
+              {{ data[i][j] }}
             </td>
           </tr>
         </tbody>
       </table>
+      <!-- 여기까지 Array to Table 구현하는 HTML 임 -->
     </div>
   </div>
 </template>
@@ -128,9 +146,10 @@ export default {
       file: File,
       arrayBuffer: null,
       filelist: null,
-      arraylist: null, // 이게 Json 형식
-      data: null, // 헤더 Array (표시용도)
-      headers: null, // 데이터 Array (표시용도)
+      arraylist: null, // Array형식
+      jsonlist : [],
+      data: null, // 데이터 Array (표시용도)
+      headers: null, // 헤더 Array (표시용도)
       sellerlist: ["김진성", "김기운", "김수겸"],
       selectedSeller: null,
       brandlist: ["애즈유", "침대팔이", "XYZ"],
@@ -155,56 +174,64 @@ export default {
         var first_sheet_name = workbook.SheetNames[0];
         var worksheet = workbook.Sheets[first_sheet_name];
         // console.log(XLSX.utils.sheet_to_json(worksheet, { raw: true }));
-        this.arraylist = XLSX.utils.sheet_to_json(worksheet, { raw: true });
+        this.arraylist = XLSX.utils.sheet_to_json(worksheet, { header : 1, blankrows : false});
+        // { header : 1 옵션 넣으면 json 아니고 그냥 array로 나옴}
         this.filelist = [];
 
-        // Json Array object 에서 key 값 하고 value 를 모든 Array 에 다 추가해야 합니다. How to?
+        console.log(this.arraylist);
 
-        console.log(my.json2Array(this.arraylist));
-        console.log(this.headers);
+        this.headers = my.array2Table(this.arraylist)[0];
+        this.data = my.array2Table(this.arraylist)[1];
 
-        return this.setup(); // 순차적으로 Setup 함수 실행
+        // Array 수정 파트 
+
+
+        // 수정된 Array를 Json 으로 
+        this.jsonlist = JSON.stringify(this.arraylist);
+
+        console.log(this.jsonlist);
+        // return this.setup(); // 순차적으로 Setup 함수 실행
       };
     },
-    setup() {
-      var data = this.arraylist;
-      const getHeaders = () => {
-        let h = [];
-        if (data.length > 0) {
-          var columnsIn = data[0];
-          for (var key in columnsIn) {
-            h.push({ text: key });
-            // console.log(key); // here is your column name you are looking for
-          }
-        } else {
-          console.log("No columns");
-        }
-        return h;
-      };
-      // let headers = ref([{text : 'col-1'},{text : 'col-2'}])
-      var headers = getHeaders();
-      // return {
-      //   data,
-      //   headers
-      // }
+    // setup() {
+    //   var data = this.arraylist;
+    //   const getHeaders = () => {
+    //     let h = [];
+    //     if (data.length > 0) {
+    //       var columnsIn = data[0];
+    //       for (var key in columnsIn) {
+    //         h.push({ text: key });
+    //         // console.log(key); // here is your column name you are looking for
+    //       }
+    //     } else {
+    //       console.log("No columns");
+    //     }
+    //     return h;
+    //   };
+    //   // let headers = ref([{text : 'col-1'},{text : 'col-2'}])
+    //   var headers = getHeaders();
+    //   // return {
+    //   //   data,
+    //   //   headers
+    //   // }
 
-      for (let index = 0; index < data.length; index++) {
-        data[index].Seller = "";
-        data[index].Brand = "";
-        data[index].Manager = "";
-      }
+    //   for (let index = 0; index < data.length; index++) {
+    //     data[index].Seller = "";
+    //     data[index].Brand = "";
+    //     data[index].Manager = "";
+    //   }
 
-      this.data = data;
-      headers = headers.concat(
-        { text: "Seller" },
-        { text: "Brand" },
-        { text: "Manager" }
-      );
-      this.headers = headers;
+    //   this.data = data;
+    //   headers = headers.concat(
+    //     { text: "Seller" },
+    //     { text: "Brand" },
+    //     { text: "Manager" }
+    //   );
+    //   this.headers = headers;
 
-      console.log(this.data);
-      console.log(headers);
-    },
+    //   // console.log(this.data);
+    //   // console.log(headers);
+    // },
     SBMApply() {
       for (let index = 0; index < this.data.length; index++) {
         this.data[index].Seller = this.selectedSeller;
@@ -222,7 +249,7 @@ export default {
     },
 
     serverSend() {
-      console.log(this.data);
+      console.log(this.jsonlist);
       axios
         .post("http://localhost:8000/order", this.data)
         .then(function (result) {

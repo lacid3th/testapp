@@ -74,7 +74,7 @@ export default {
             // 조건 붙여서 리퀘스트 하기
             await axios.post("http://localhost:8000/tmpLoad","dummy").then(
                 (response) => {
-                    console.log(response.data);
+                    // console.log(response.data);
                     this.loadedData = response.data;
                     this.setup();
                 },
