@@ -14,10 +14,28 @@ function json2Array(json) {
     return result;
 }
 
-// function columnDel(array) { 
-//     var result = [];
-//     return result;
-// }
+function columnDel(array, colNum) { 
+    var result = [];
+    array[0].splice(colNum, 1);
+
+    for (let i = 1; i < array.length; i++) {
+        array[i].splice(colNum, 1);
+    }
+    result = array;
+
+    return result;
+}
+function columnInsert(array, colNum, columnName, value){
+    var result = [];
+    array[0].splice(colNum, 0, columnName);
+
+    for (let i = 1; i < array.length; i++) {
+        array[i].splice(colNum, 0, value);
+    }
+    result = array;
+
+    return result;
+}
 
 function array2Table(arrayRawData) {
     var headers = [];
@@ -32,11 +50,25 @@ function array2Table(arrayRawData) {
     // console.log(rowData);
 }
 
-function array2Json(array){
+function array2Json(array) {
     var jsonReturn = [];
-    jsonReturn = JSON.stringify(array)
+    var row;
+    let key = array[0];
+    var value = [];
+    for (let i = 1; i < array.length; i++) {
+        value.push(array[i]);
+    }
+
+    for (let i = 0; i < value.length; i++) {
+        row = key.reduce((acc, curr, idx) => {
+            acc[curr] = value[i][idx];
+            return acc;
+        }, new Object);
+        jsonReturn.push(row)
+    }
+
     return jsonReturn;
 }
 
 
-export { printout, json2Array, array2Table, array2Json } // 여기에 함수 다 추가해야 함 엑셀로드니 뭐니 하는것들 전부다
+export { printout, json2Array, array2Table, array2Json, columnDel, columnInsert } // 여기에 함수 다 추가해야 함 엑셀로드니 뭐니 하는것들 전부다

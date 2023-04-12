@@ -1,6 +1,7 @@
 <template>
   <div>
-    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
+    <div
+      class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
     >
       <h1 class="h2">Functions</h1>
 
@@ -13,7 +14,11 @@
             placeholder="Upload file"
             accept=".csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
           />
-          <button type="button" class="btn btn-sm btn-outline-secondary">
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-secondary"
+            @click="columnControl"
+          >
             Apply
           </button>
           <button
@@ -123,8 +128,8 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for= "(line, i) in data" :key="i">
-            <td v-for= "(row, j) in data[0]" :key="j">
+          <tr v-for="(line, i) in data" :key="i">
+            <td v-for="(row, j) in data[0]" :key="j">
               {{ data[i][j] }}
             </td>
           </tr>
@@ -147,7 +152,7 @@ export default {
       arrayBuffer: null,
       filelist: null,
       arraylist: null, // Array형식
-      jsonlist : [],
+      jsonlist: [],
       data: null, // 데이터 Array (표시용도)
       headers: null, // 헤더 Array (표시용도)
       sellerlist: ["김진성", "김기운", "김수겸"],
@@ -174,25 +179,34 @@ export default {
         var first_sheet_name = workbook.SheetNames[0];
         var worksheet = workbook.Sheets[first_sheet_name];
         // console.log(XLSX.utils.sheet_to_json(worksheet, { raw: true }));
-        this.arraylist = XLSX.utils.sheet_to_json(worksheet, { header : 1, blankrows : false});
+        this.arraylist = XLSX.utils.sheet_to_json(worksheet, {
+          header: 1,
+          blankrows: false,
+        });
         // { header : 1 옵션 넣으면 json 아니고 그냥 array로 나옴}
         this.filelist = [];
 
         console.log(this.arraylist);
 
+        // HTML 에 쏘는 파트
         this.headers = my.array2Table(this.arraylist)[0];
         this.data = my.array2Table(this.arraylist)[1];
 
-        // Array 수정 파트 
+        // Array 수정 파트
 
-
-        // 수정된 Array를 Json 으로 
-        this.jsonlist = JSON.stringify(this.arraylist);
+        // 수정된 Array를 Json 형식의 object 로 만듬 stringlify 는 전송 안됨
+        this.jsonlist = my.array2Json(this.arraylist);
 
         console.log(this.jsonlist);
         // return this.setup(); // 순차적으로 Setup 함수 실행
       };
     },
+    columnControl() {
+      my.columnDel(this.arraylist, 1);
+      this.headers = my.array2Table(this.arraylist)[0];
+      this.data = my.array2Table(this.arraylist)[1];
+    },
+
     // setup() {
     //   var data = this.arraylist;
     //   const getHeaders = () => {
@@ -233,11 +247,20 @@ export default {
     //   // console.log(headers);
     // },
     SBMApply() {
-      for (let index = 0; index < this.data.length; index++) {
-        this.data[index].Seller = this.selectedSeller;
-        this.data[index].Brand = this.selectedBrand;
-        this.data[index].Manager = this.selectedManager;
-      }
+      // for (let index = 0; index < this.data.length; index++) {
+      //   this.data[index].Seller = this.selectedSeller;
+      //   this.data[index].Brand = this.selectedBrand;
+      //   this.data[index].Manager = this.selectedManager;
+      // }
+      my.columnInsert(this.arraylist, 1, "Seller", this.selectedSeller);
+      my.columnInsert(this.arraylist, 2, "Brand", this.selectedBrand);
+      my.columnInsert(this.arraylist, 3, "Manager", this.selectedManager);
+
+      this.headers = my.array2Table(this.arraylist)[0];
+      this.data = my.array2Table(this.arraylist)[1];
+
+      this.jsonlist = my.array2Json(this.arraylist);
+      
     },
 
     jsontoArray(json) {
@@ -251,13 +274,11 @@ export default {
     serverSend() {
       console.log(this.jsonlist);
       axios
-        .post("http://localhost:8000/order", this.data)
+        .post("http://localhost:8000/order", this.jsonlist)
         .then(function (result) {
           console.log(result.data);
         });
     },
-
-    
 
     serverSend2() {
       axios.get("http://localhost:8000/api").then(function (result) {
