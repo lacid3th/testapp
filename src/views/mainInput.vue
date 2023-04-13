@@ -1,5 +1,56 @@
 <template>
-  <div>
+  <div class="text-h4 pa-5">
+    <p
+      style="
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+      "
+    >
+      INPUT
+    </p>
+    <v-container>
+      <v-row justify="center">
+        <v-col>
+          <v-file-input
+            class="w-100"
+            label="File input"
+            v-on:change="addfile($event)"
+            placeholder="Upload file"
+            accept=".csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+          ></v-file-input>
+        </v-col>
+        <v-col cols="auto" class="m-2">
+          <v-btn class="mr-3" @click="columnControl"> Del Column </v-btn>
+          <v-btn class="mr-3" @click="serverSend"> Send Serve </v-btn>
+          <v-btn class="mr-3"> Button </v-btn>
+          <v-btn class="mr-3"> Button </v-btn>
+        </v-col>
+      </v-row>
+    </v-container>
+    <div>
+      <v-table style="font-family: system-ui, 'Segoe UI"
+         fixed-header
+         height="1000px
+         " class="text-left" density="compact">
+        <thead>
+          <tr>
+            <th v-for="header in headers" :key="header">
+              {{ header }}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(line, i) in data" :key="i">
+            <td v-for="(row, j) in data[0]" :key="j">
+              {{ data[i][j] }}
+            </td>
+          </tr>
+        </tbody>
+      </v-table>
+    </div>
+
+  </div>
+
+  <!-- <div>
     <div
       class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
     >
@@ -103,7 +154,6 @@
     <div>
       <table class="table table-striped table-sm" style="">
         <thead>
-          <!-- 이거 있어야 스타일 제대로 먹음 -->
           <tr>
             <th v-for="header in headers" :key="header">
               {{ header }}
@@ -118,10 +168,11 @@
           </tr>
         </tbody>
       </table>
-      <!-- 여기까지 Array to Table 구현하는 HTML 임 -->
     </div>
-  </div>
+  </div> -->
 </template>
+
+
 <script>
 import * as XLSX from "xlsx";
 import axios from "axios";
@@ -151,7 +202,9 @@ export default {
       this.file = event.target.files[0];
       let fileReader = new FileReader();
       fileReader.readAsArrayBuffer(this.file);
-      fileReader.onload = (e) => { // eslint-disable-line no-unused-vars
+      fileReader.onload = () => {
+        // eslint-disable-line no-unused-vars
+
         this.arrayBuffer = fileReader.result;
         var data = new Uint8Array(this.arrayBuffer);
         var arr = new Array();
@@ -243,7 +296,6 @@ export default {
       this.data = my.array2Table(this.arraylist)[1];
 
       this.jsonlist = my.array2Json(this.arraylist);
-      
     },
 
     jsontoArray(json) {
