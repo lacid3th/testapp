@@ -14,6 +14,17 @@ function json2Array(json) {
     return result;
 }
 
+function obj2Array(obj) {
+    var result = [];
+    var keys = Object.keys(obj[0])
+    result.push(keys);
+
+    for (let i = 0; i < obj.length; i++) {
+        result.push(Object.values(obj[i]));
+    }
+    return result;
+}
+
 function columnDel(array, colNum) { 
     var result = [];
     array[0].splice(colNum, 1);
@@ -71,4 +82,4 @@ function array2Json(array) {
 }
 
 
-export { printout, json2Array, array2Table, array2Json, columnDel, columnInsert } // 여기에 함수 다 추가해야 함 엑셀로드니 뭐니 하는것들 전부다
+export { printout, json2Array, array2Table, array2Json, columnDel, columnInsert, obj2Array } // 여기에 함수 다 추가해야 함 엑셀로드니 뭐니 하는것들 전부다

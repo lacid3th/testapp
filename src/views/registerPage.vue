@@ -6,46 +6,23 @@
 
             <div class="btn-toolbar mb-2 mb-md-0">
                 <div class="btn-group me-2">
-                    <button type="button" class="btn btn-sm btn-outline-secondary" @click="tmpServerInput">
-                        Tmp Server insert
+                    <button type="button" class="btn btn-sm btn-outline-secondary">
+                        <router-link to="/registerUser">USER</router-link>
                     </button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary" @click="tmpServerLoad">
-                        Tmp Server Load
+                    <button type="button" class="btn btn-sm btn-outline-secondary">
+                        <router-link to="/registerSeller">SELLER</router-link>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary">
+                        <router-link to="/registerBrand">BRAND</router-link>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary">
+                        <router-link to="/registerProject">PROJECT</router-link>
                     </button>
                 </div>
             </div>
         </div>
-        <div style="display: block; justify-items: flex-start"
-            class="d-flex flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom gap-2">
-            <input v-model="sellerName" class="form-control" type="text" placeholder="Seller Name"
-                aria-label="default input example">
-            <input class="form-control" type="text" placeholder="Brand Name" aria-label="default input example">
-            <input class="form-control" type="text" placeholder="Manager Name" aria-label="default input example">
-            <div>
-                <button type="button" class="btn btn-outline-secondary" @click="SBMApply">
-                    Query
-                </button>
-            </div>
-        </div>
-        <h2>Result List</h2>
         <div>
-            <table class="table table-striped table-sm" style="">
-                <thead>
-                    <!-- 이거 있어야 스타일 제대로 먹음 -->
-                    <tr>
-                        <th v-for="header in headers" :key="header.text">
-                            {{ header.text }}
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="(row, index) in data" :key="index">
-                        <td v-for="header in headers" :key="header.text">
-                            {{ row[header.text] }}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <RouterView></RouterView>
         </div>
     </div>
 </template>
@@ -108,7 +85,6 @@ export default {
     },
     // 여기 있으면 페이지 불러오자마자 실행됨
     mounted() {
-        this.tmpServerLoad();
         my.printout();
     },
 }

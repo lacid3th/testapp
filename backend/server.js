@@ -32,18 +32,20 @@ const orderlistSchema = new mongoose.Schema({
         collection: 'orderlist'
     });
 
-const sellerListSchema = new mongoose.Schema({
-    Seller: { type: String },
+const userInfoSchema = new mongoose.Schema({
+    Name : { type: String },
+    Age: { type: String },
+    ID: { type: String },
 },
     {
         timestamps: true,
-        collection: 'sellerList'
+        collection: 'userlist'
     })
 
 // 스키마로 모델 만들기.. 왜 하는지 모름
 var orderlist = mongoose.model('orderlist', orderlistSchema);
 // const orderlist = mongoose.model('orderlist', orderlistSchema);
-var sellerListModel = mongoose.model('sellerList', sellerListSchema);
+var userInfoModel = mongoose.model('userInfo', userInfoSchema);
 
 var db = mongoose.connection;
 var data;
@@ -80,11 +82,19 @@ app.post('/order', (req, res) => {
     res.send(orderedlst);
 });
 // tmpRegister
-app.post('/tmpRegister', (req, res) => {
-    var sellerList = new sellerListModel();
-    sellerList.Seller = req.body.Seller,
-    sellerList.save();
-    res.send(sellerList);
+app.post('/saveUser', (req, res) => {
+    var userInfo = new userInfoModel();
+    userInfo.Name = req.body.Name,
+    userInfo.Age = req.body.Age,
+    userInfo.ID = req.body.ID,
+    userInfo.save();
+    res.send(userInfo);
+});
+
+app.post('/delUser', (req, res) => {
+    deletebyName(req.body.Name);
+    res.send("완료");
+
 });
 
 
@@ -98,11 +108,12 @@ app.post('/access', (req, res) => {
 
 });
 
-app.post('/tmpLoad',(req, res) => {
-    getItemsSeller().then(function(data){
+app.post('/loadUserInfo',(req, res) => {
+    getUserInfo().then(function(data){
         res.send(data);
     })
 })
+
 
 // async await 을 사용해서 비동기 처리를 동기처럼 처리
 async function getItems(object) {
@@ -111,8 +122,12 @@ async function getItems(object) {
     return items;
 };
 
-async function getItemsSeller(){
-    const items = await sellerListModel.find();
+async function getUserInfo(){
+    const items = await userInfoModel.find();
     console.log(items);
     return items;
+}
+
+async function deletebyName(value){
+    await userInfoModel.deleteOne({ Name : value });
 }
