@@ -74,7 +74,12 @@ export default {
             this.data = my.array2Table(this.loadedArray)[1];
         },
         async save2Server() {
-            let userInfo = {
+            var c = confirm("이름 :" + this.userName + '\n'
+                          + "나이 :" + this.userAge + '\n'
+                          + "ID :" + this.userID + '\n'
+                          + "로 입력하시겠습니까?");
+            if(c == true){
+                let userInfo = {
                 Name: this.userName,
                 Age: this.userAge,
                 ID: this.userID,
@@ -85,7 +90,12 @@ export default {
                 .then(function (result) {
                     console.log(result.data);
                 });
-            this.loadFromServer();
+                // setTimeout 쓸때 매개변수 있으면 조심해야 함, 뒤쪽에 넣어야 됨
+            setTimeout(this.loadFromServer,1000);
+            }
+            else {
+                alert("취소되었습니다");
+            }
         },
 
         async delFromServer() {
