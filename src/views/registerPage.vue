@@ -28,7 +28,7 @@
 </template>
 <script>
 import axios from "axios";
-import * as my from '../myFunction.js'; /* eslint-disable */
+import * as my from '../myFunction.js'; 
 
 export default {
     data() {
@@ -61,34 +61,15 @@ export default {
 
             );
         },
-
-        setup() {
-            var data = this.loadedData;
-            const getHeaders = () => {
-                let h = [];
-                if (data.length > 0) {
-                    var columnsIn = data[0];
-                    for (var key in columnsIn) {
-                        h.push({ text: key });
-                        // console.log(key); // here is your column name you are looking for
-                    }
-                } else {
-                    console.log("No columns");
-                }
-                return h;
-            };
-            // let headers = ref([{text : 'col-1'},{text : 'col-2'}])
-            var headers = getHeaders();
-            this.headers = headers;
-            this.data = data;
-        },
     },
     // 여기 있으면 페이지 불러오자마자 실행됨
     mounted() {
-        my.printout();
+        my.printEmpty();
     },
 }
 
 </script>
 
-<style></style>
+<style>
+
+</style>

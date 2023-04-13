@@ -101,23 +101,6 @@
     </div>
     <h2>Order List</h2>
     <div>
-      <!-- 여기서부터 Array to Table 구현하는 HTML 임 -->
-      <!-- <table class="table table-striped table-sm" style="">
-        <thead>
-          <tr>
-            <th v-for="header in headers" :key="header">
-              {{ header }}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(row, index) in data" :key="index">
-            <td v-for="header in headers" :key="header">
-              {{ row[header] }}
-            </td>
-          </tr>
-        </tbody>
-      </table> -->
       <table class="table table-striped table-sm" style="">
         <thead>
           <!-- 이거 있어야 스타일 제대로 먹음 -->
