@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-layout>
-      <v-app-bar title="Ordering Automation"></v-app-bar>
+      <v-app-bar class="text-h4" title="FORLOUD : Ordering Automation"></v-app-bar>
       <v-navigation-drawer>
         <v-list density="compact" nav>
           <v-list-item
